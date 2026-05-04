@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      results: {
+        Row: {
+          animal: string
+          confidence: number
+          created_at: string
+          id: string
+          is_public: boolean
+          morph_url: string | null
+          personality: string | null
+          selfie_url: string | null
+          style: string
+          top_matches: Json
+          traits: Json
+        }
+        Insert: {
+          animal: string
+          confidence?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          morph_url?: string | null
+          personality?: string | null
+          selfie_url?: string | null
+          style?: string
+          top_matches?: Json
+          traits?: Json
+        }
+        Update: {
+          animal?: string
+          confidence?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          morph_url?: string | null
+          personality?: string | null
+          selfie_url?: string | null
+          style?: string
+          top_matches?: Json
+          traits?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
