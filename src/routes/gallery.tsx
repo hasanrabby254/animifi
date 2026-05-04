@@ -35,7 +35,7 @@ function Gallery() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {items.map((g) => (
+            {items.map((g: { id: string; animal: string; morph_url: string | null; confidence: number }) => (
               <Link
                 key={g.id}
                 to="/result/$id"
