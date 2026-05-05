@@ -30,6 +30,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "fVc2w-jIoAlrmNkKl6H4IecNZMnrdLTuu2oyyJdF9d4" },
       { title: "Animify — Discover Your Spirit Animal with AI" },
       { name: "description", content: "Upload a selfie and instantly discover the animal you most resemble. Free, premium AI portraits with one-click sharing." },
       { property: "og:title", content: "Animify — Discover Your Spirit Animal with AI" },
