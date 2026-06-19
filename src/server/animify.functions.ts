@@ -211,6 +211,19 @@ export const fetchResult = createServerFn({ method: "GET" })
       .eq("id", data.id)
       .maybeSingle();
     if (error || !row) return null;
+
+    // Selfies are stored under a non-public path. Sign on demand so only
+    // viewers of this result page (who know the id) can load the image.
+    if (row.selfie_url) {
+      const m = row.selfie_url.match(/\/animify\/(selfies\/[^?]+)/);
+      const path = m ? m[1] : row.selfie_url.startsWith("selfies/") ? row.selfie_url : null;
+      if (path) {
+        const { data: signed } = await supabaseAdmin.storage
+          .from("animify")
+          .createSignedUrl(path, 60 * 60);
+        if (signed?.signedUrl) row.selfie_url = signed.signedUrl;
+      }
+    }
     return row;
   });
 
