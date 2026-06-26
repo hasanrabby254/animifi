@@ -44,20 +44,20 @@ async function uploadDataUrl(dataUrl: string, prefix: string): Promise<string | 
 export const analyzeSelfie = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => inputSchema.parse(d))
   .handler(async ({ data }): Promise<AnalysisResult> => {
-    const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
-    if (!LOVABLE_API_KEY) throw new Error("AI is not configured");
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (!GEMINI_API_KEY) throw new Error("AI is not configured");
 
     const selfieUrl = await uploadDataUrl(data.imageDataUrl, "selfies");
 
     // 1. Analyze the face -> animal match (structured output via tool calling)
-    const analysisRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const analysisRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${GEMINI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gemini-2.5-flash",
         messages: [
           {
             role: "system",
@@ -117,7 +117,7 @@ export const analyzeSelfie = createServerFn({ method: "POST" })
       const text = await analysisRes.text();
       console.error("AI analysis failed", analysisRes.status, text);
       if (analysisRes.status === 429) throw new Error("Too many requests — please try again in a moment.");
-      if (analysisRes.status === 402) throw new Error("AI credits exhausted. Please try again later.");
+      if (analysisRes.status === 403) throw new Error("Invalid API key. Please check your Gemini API key.");
       throw new Error("AI analysis failed");
     }
 
@@ -136,14 +136,14 @@ export const analyzeSelfie = createServerFn({ method: "POST" })
           : data.style === "cartoonish"
             ? "stylized cartoon illustration, Pixar quality"
             : "hyperrealistic editorial portrait";
-      const morphRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const morphRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${GEMINI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash-image",
+          model: "gemini-2.0-flash-exp-image-generation",
           modalities: ["image", "text"],
           messages: [
             {
