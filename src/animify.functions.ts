@@ -145,11 +145,11 @@ export const analyzeSelfie = createServerFn({ method: "POST" })
         body: JSON.stringify({
           contents: [{
             parts: [
-              { text: `Transform this person into a ${styleHint} portrait beautifully morphed with a ${animal}. Deep emerald background with subtle gold rim light. Keep facial identity recognizable, blend ${animal} features into hair, eyes, and skin naturally. Square 1:1 format. Premium magazine quality.` },
-              { inline_data: { mime_type: imgMime, data: imgB64 } }
+              { inline_data: { mime_type: imgMime, data: imgB64 } },
+              { text: `This is a real person's photo. Create a stunning ${styleHint} portrait blending this exact person's face with a ${animal}. Keep their facial features clearly recognizable. Add ${animal} characteristics: ears, markings, fur texture around the face. Deep emerald green background with warm gold rim lighting. Square format. High quality magazine portrait.` },
             ]
           }],
-          generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
+          generationConfig: { response_modalities: ["IMAGE", "TEXT"] }
         }),
       });
 
