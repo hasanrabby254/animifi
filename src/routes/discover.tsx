@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useRef, useState } from "react";
 import { Upload, Camera, Sparkles, ShieldCheck, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { analyzeSelfie } from "@/server/animify.functions";
+import { analyzeSelfie } from "@/animify.functions";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/AdSlot";
 
