@@ -139,7 +139,7 @@ export const analyzeSelfie = createServerFn({ method: "POST" })
       const imgMime = imgMatch ? imgMatch[1] : "image/jpeg";
       const imgB64 = imgMatch ? imgMatch[2] : "";
 
-      const morphRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`, {
+      const morphRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
