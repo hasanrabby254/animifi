@@ -134,33 +134,36 @@ export const analyzeSelfie = createServerFn({ method: "POST" })
           : data.style === "cartoonish"
             ? "stylized cartoon illustration, Pixar quality"
             : "hyperrealistic editorial portrait";
-      const morphRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`, {
+
+      const imgMatch = data.imageDataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+      const imgMime = imgMatch ? imgMatch[1] : "image/jpeg";
+      const imgB64 = imgMatch ? imgMatch[2] : "";
+
+      const morphRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GEMINI_API_KEY}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${GEMINI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "gemini-2.0-flash-exp-image-generation",
-          modalities: ["image", "text"],
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "text",
-                  text: `Transform this person into a premium magazine-style portrait morphing them with a ${animal}. ${styleHint}. Deep emerald background with subtle gold rim light. Keep facial identity recognizable, blend animal features beautifully into hair, eyes, and skin. Square 1:1.`,
-                },
-                { type: "image_url", image_url: { url: data.imageDataUrl } },
-              ],
-            },
-          ],
+          contents: [{
+            parts: [
+              { text: `Transform this person into a ${styleHint} portrait beautifully morphed with a ${animal}. Deep emerald background with subtle gold rim light. Keep facial identity recognizable, blend ${animal} features into hair, eyes, and skin naturally. Square 1:1 format. Premium magazine quality.` },
+              { inline_data: { mime_type: imgMime, data: imgB64 } }
+            ]
+          }],
+          generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
         }),
       });
+
       if (morphRes.ok) {
         const mj = await morphRes.json();
-        const dataUrl = mj.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        if (dataUrl) morphUrl = await uploadDataUrl(dataUrl, "morphs");
+        const imgPart = mj.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData);
+        if (imgPart?.inlineData?.data) {
+          const mime = imgPart.inlineData.mimeType ?? "image/png";
+          const morphDataUrl = `data:${mime};base64,${imgPart.inlineData.data}`;
+          morphUrl = await uploadDataUrl(morphDataUrl, "morphs");
+        }
+      } else {
+        const errText = await morphRes.text();
+        console.error("morph API error", morphRes.status, errText);
       }
     } catch (e) {
       console.error("morph generation failed", e);
