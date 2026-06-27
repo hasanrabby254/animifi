@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { fetchResult, setResultPublic } from "@/server/animify.functions";
+import { fetchResult, setResultPublic } from "@/animify.functions";
 import { Download, Share2, Sparkles, RefreshCw, Globe } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
