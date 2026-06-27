@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { fetchGallery } from "@/server/animify.functions";
+import { fetchGallery } from "@/animify.functions";
 import { AdSlot } from "@/components/AdSlot";
 
 export const Route = createFileRoute("/gallery")({
